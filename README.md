@@ -1,7 +1,27 @@
 # EC2 Provisioning Evolution
 
 A portfolio repository documenting the evolution of AWS EC2 instance provisioning
-across two distinct eras of infrastructure tooling.
+across two distinct eras of infrastructure tooling — from SaltStack's salt-cloud
+module in the mid-2010s to modern Terraform-based declarative infrastructure.
+
+---
+
+## Repository structure
+
+```
+ec2-provisioning-evolution/
+├── legacy-salt-cloud/               ← Part 1
+│   ├── README.md
+│   ├── cloud.providers.d/
+│   │   └── ec2-provider.conf        # AWS EC2 provider, instance role auth
+│   ├── cloud.profiles.d/
+│   │   └── devops-tooling-profile.conf  # CentOS 7 profiles, AZ variants, size matrix
+│   ├── cloud.maps.d/
+│   │   └── devops-tooling-map.conf  # Named instances → profiles
+│   └── bootstrap-scripts/
+│       └── bootstrap-minion.sh      # Salt minion install + master handoff
+└── modern-terraform/                ← Part 2 (coming soon)
+```
 
 ---
 
@@ -11,12 +31,20 @@ Located in [`legacy-salt-cloud/`](legacy-salt-cloud/).
 
 A recreation of the SaltStack salt-cloud-based provisioning system originally
 architected and built for a private-subnet DevOps tooling environment on AWS.
-Covers the provider configuration, CentOS 7 instance profiles, deployment maps,
-and a custom bootstrap script that installs the Salt minion and hands off to
-Salt state management.
+The environment provisioned a small fleet of purpose-built servers — source
+control, artifact repository, directory services, CI/CD, and monitoring — all
+as CentOS 7 instances within private VPC subnets.
+
+The system used salt-cloud's provider/profile/map model: a provider block
+handled AWS authentication via instance role credentials, profile blocks defined
+the CentOS 7 AMI, storage, subnet placement, and a size matrix via `extends`,
+and a map file tied named minion IDs to profiles for single-command environment
+provisioning. A custom bootstrap script installed the Salt minion from an
+internal S3-hosted yum repository and injected the pre-generated key pair and
+minion config, handing off to Salt state management once the minion checked in.
 
 See [`legacy-salt-cloud/README.md`](legacy-salt-cloud/README.md) for the full
-design walkthrough.
+design walkthrough, file-by-file decisions, and operational commands.
 
 ---
 
@@ -24,9 +52,8 @@ design walkthrough.
 
 The `modern-terraform/` directory is planned for a future addition. It will
 rebuild the same provisioning goal using Terraform, illustrating the shift in
-approach — declarative HCL state management, explicit resource dependencies,
-remote state, and a provider/module ecosystem that didn't exist in the salt-cloud
-era.
+approach — declarative HCL, explicit resource dependency graphs, remote state,
+and a provider/module ecosystem that didn't exist in the salt-cloud era.
 
 ---
 
