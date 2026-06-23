@@ -1,0 +1,25 @@
+# Secrets — never commit
+*.pem
+*.key
+*.p12
+.env
+.env.*
+
+# Editor artifacts
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS artifacts
+.DS_Store
+Thumbs.db
+
+# Terraform (future — modern-terraform/ section)
+**/.terraform/
+*.tfstate
+*.tfstate.*
+*.tfvars
+*.tfvars.json
+.terraform.lock.hcl
