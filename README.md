@@ -10,8 +10,11 @@ module in the mid-2010s to modern Terraform-based declarative infrastructure.
 
 ```
 ec2-provisioning-evolution/
+├── LICENSE
 ├── legacy-salt-cloud/               ← Part 1
 │   ├── README.md
+│   ├── cloud.conf.d/
+│   │   └── cloud.conf               # Global defaults: deploy script, logging
 │   ├── cloud.providers.d/
 │   │   └── ec2-provider.conf        # AWS EC2 provider, instance role auth
 │   ├── cloud.profiles.d/
@@ -63,3 +66,9 @@ All configuration values in this repository are illustrative. Any AMI IDs,
 subnet IDs, security group IDs, account IDs, IP addresses, and key names are
 generic placeholders marked clearly in comments. No production credentials or
 environment-specific identifiers are included.
+
+---
+
+## License
+
+Licensed under MIT — see [LICENSE](LICENSE).

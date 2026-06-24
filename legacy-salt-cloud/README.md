@@ -33,6 +33,7 @@ and hand off to Salt states.
 ```
 salt-cloud master (inside VPC)
 │
+├── cloud.conf.d/cloud.conf                      ← global defaults (deploy script, logging)
 ├── cloud.providers.d/ec2-provider.conf          ← AWS credentials & provider settings
 ├── cloud.profiles.d/devops-tooling-profile.conf ← AMI, size, storage, tags
 ├── cloud.maps.d/devops-tooling-map.conf         ← named instances → profiles
@@ -81,6 +82,14 @@ salt-cloud master (inside VPC)
 ---
 
 ## File structure
+
+### `cloud.conf.d/cloud.conf`
+
+Global salt-cloud configuration applied across all providers, profiles, and maps.
+The most significant setting here is `script: bootstrap-minion`, which tells
+salt-cloud which deploy script to render and execute on each new instance. Without
+this, salt-cloud would fall back to the built-in generic bootstrap, which installs
+Salt from the public SaltStack repo rather than from the internal yum repository.
 
 ### `cloud.providers.d/ec2-provider.conf`
 
