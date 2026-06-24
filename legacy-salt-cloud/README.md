@@ -11,6 +11,17 @@ configuration values are illustrative placeholders.
 
 ---
 
+## Skills Demonstrated
+
+- Infrastructure provisioning design using SaltStack's salt-cloud provider/profile/map model
+- AWS EC2 automation with security-conscious authentication (IAM instance role credentials — no static keys on disk)
+- Multi-AZ profile design using `extends` to manage a size matrix without duplicating configuration
+- EBS volume lifecycle management (`del_root_vol_on_destroy`, `del_all_vol_on_destroy`, `rename_on_destroy`) to prevent orphaned resource accumulation
+- Bootstrap automation via Jinja-templated deploy scripts, including pre-generated RSA key injection for zero-touch minion registration
+- Internal yum repository management for controlled Salt package versioning in a network-restricted VPC (no direct internet egress)
+
+---
+
 ## Context and era
 
 **Tool:** salt-cloud, part of the SaltStack project (pre-Broadcom acquisition era).
