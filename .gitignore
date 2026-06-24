@@ -16,10 +16,9 @@
 .DS_Store
 Thumbs.db
 
-# Terraform (future — modern-terraform/ section)
+# Terraform (modern-terraform/ section)
 **/.terraform/
 *.tfstate
 *.tfstate.*
 *.tfvars
 *.tfvars.json
-.terraform.lock.hcl
