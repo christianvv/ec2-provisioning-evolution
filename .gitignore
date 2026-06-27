@@ -22,3 +22,7 @@ Thumbs.db
 *.tfstate.*
 *.tfvars
 *.tfvars.json
+
+# Local overrides
+*_override.tf
+backend_local.hcl
