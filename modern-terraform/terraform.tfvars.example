@@ -1,0 +1,1 @@
+admin_cidr = "YOUR_PUBLIC_IP/32"  # run `curl https://checkip.amazonaws.com` to find yours
