@@ -33,3 +33,17 @@ variable "admin_cidr" {
   type        = string
   default     = "YOUR_IP_HERE/32"
 }
+
+variable "instances" {
+  description = "Map of compute instances to provision, keyed by purpose"
+  type = map(object({
+    instance_type = string
+  }))
+  default = {
+    "source-control"     = { instance_type = "t3.micro" }
+    "artifact-repo"      = { instance_type = "t3.micro" }
+    "directory-services" = { instance_type = "t3.micro" }
+    "ci-cd"              = { instance_type = "t3.micro" }
+    "monitoring"         = { instance_type = "t3.micro" }
+  }
+}
