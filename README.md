@@ -1,5 +1,11 @@
 # EC2 Provisioning Evolution
 
+![SaltStack](https://img.shields.io/badge/SaltStack-2D4A6E?style=flat&logo=saltproject&logoColor=white)
+![Terraform](https://img.shields.io/badge/Terraform-7B42BC?style=flat&logo=terraform&logoColor=white)
+![AWS](https://img.shields.io/badge/AWS-FF9900?style=flat&logo=amazonaws&logoColor=white)
+![License: MIT](https://img.shields.io/badge/License-MIT-green?style=flat)
+![Tested with LocalStack](https://img.shields.io/badge/Tested_with-LocalStack-teal?style=flat)
+
 A portfolio repository documenting the evolution of AWS EC2 instance provisioning
 across two distinct eras of infrastructure tooling — from SaltStack's salt-cloud
 module in the mid-2010s to modern Terraform-based declarative infrastructure.
@@ -23,8 +29,43 @@ ec2-provisioning-evolution/
 │   │   └── devops-tooling-map.conf  # Named instances → profiles
 │   └── bootstrap-scripts/
 │       └── bootstrap-minion.sh      # Salt minion install + master handoff
-└── modern-terraform/                ← Part 2 (coming soon)
+└── modern-terraform/                ← Part 2
+    ├── README.md
+    ├── bootstrap/
+    │   └── main.tf                  # S3 state bucket with versioning and encryption
+    ├── modules/
+    │   ├── networking/              # VPC, subnets, gateways, route tables, security groups
+    │   └── compute/                 # AMI data source, EC2 instances via for_each
+    ├── main.tf                      # Provider configuration and module calls
+    ├── backend.tf                   # S3 remote backend with native use_lockfile locking
+    └── variables.tf                 # Input variables
 ```
+
+---
+
+## Skills Demonstrated
+
+### Legacy (salt-cloud era)
+
+- salt-cloud provider/profile/map model for declarative EC2 instance provisioning
+- IAM instance-role credentials — no static access keys stored on disk
+- Multi-AZ profile design using `extends` for a size matrix without configuration duplication
+- Bootstrap automation via Jinja-templated deploy scripts with pre-generated RSA minion key
+  injection for zero-touch Salt master registration
+- Internal S3-hosted yum repository for controlled Salt versioning in a network-restricted VPC
+- Private-subnet-only instance placement with no public IP assignment
+
+### Modern (Terraform era)
+
+- Remote S3 backend with native S3 locking (`use_lockfile`) — DynamoDB-based locking
+  intentionally avoided as deprecated
+- Bootstrap pattern for state backend chicken-and-egg provisioning
+- Reusable module design with networking and compute concerns in separate modules
+- Public/private VPC tiering with NAT Gateway and bastion security group pattern
+- Dynamic AMI lookup via data source — no hardcoded AMI IDs
+- `for_each` over a map variable for stable, purpose-keyed resource addressing in state
+- `terraform state mv` for zero-infrastructure-impact module refactoring
+- LocalStack for cost-free local testing of full apply/destroy lifecycle
 
 ---
 
@@ -51,21 +92,46 @@ design walkthrough, file-by-file decisions, and operational commands.
 
 ---
 
-## Part 2 — Modern: Terraform (coming soon)
+## Part 2 — Modern: Terraform
 
-The `modern-terraform/` directory is planned for a future addition. It will
-rebuild the same provisioning goal using Terraform, illustrating the shift in
-approach — declarative HCL, explicit resource dependency graphs, remote state,
-and a provider/module ecosystem that didn't exist in the salt-cloud era.
+Located in [`modern-terraform/`](modern-terraform/).
+
+A ground-up rebuild of the same DevOps tooling fleet using Terraform, illustrating
+the shift in approach — declarative HCL, explicit resource dependency graphs,
+remote state, and a provider/module ecosystem that didn't exist in the salt-cloud
+era. Unlike the legacy system, which provisioned only EC2 instances into a
+pre-existing VPC, this configuration manages the full networking foundation from
+scratch: VPC, subnets, internet and NAT gateways, route tables, and security groups,
+in addition to the compute layer.
+
+State is stored remotely in an S3 bucket using Terraform's native `use_lockfile`
+mechanism, which replaces the older DynamoDB-based locking pattern. The S3 bucket
+itself is provisioned by a separate bootstrap configuration — a pattern that
+sidesteps the chicken-and-egg problem of using a Terraform-managed resource as a
+backend before any state exists. Networking and compute resources are organized into
+separate modules, with the root config wiring them together through module output
+references.
+
+All development and testing was done against LocalStack, enabling a full
+apply/destroy lifecycle — including NAT Gateway, EC2 instances, and remote state
+operations — without incurring AWS costs.
+
+See [`modern-terraform/README.md`](modern-terraform/README.md) for the full
+architecture walkthrough, LocalStack setup, and deployment guide.
 
 ---
 
 ## Repository notes
 
-All configuration values in this repository are illustrative. Any AMI IDs,
-subnet IDs, security group IDs, account IDs, IP addresses, and key names are
-generic placeholders marked clearly in comments. No production credentials or
-environment-specific identifiers are included.
+All configuration values in this repository are illustrative. Any AMI IDs, subnet IDs,
+security group IDs, account IDs, IP addresses, and key names are generic placeholders
+or intentionally invalid values (such as the `admin_cidr` variable default
+`"YOUR_IP_HERE/32"`, which causes a plan-time failure rather than silently defaulting
+to something permissive). No production credentials or environment-specific identifiers
+are included. Files containing environment-specific values — `terraform.tfvars`,
+`backend_local.hcl`, `provider_override.tf` — are gitignored and are not committed.
+Local testing uses LocalStack; no real AWS infrastructure was harmed in the making of
+this repository.
 
 ---
 
