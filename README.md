@@ -76,7 +76,7 @@ Located in [`legacy-salt-cloud/`](legacy-salt-cloud/).
 A recreation of the SaltStack salt-cloud-based provisioning system originally
 architected and built for a private-subnet DevOps tooling environment on AWS.
 The environment provisioned a small fleet of purpose-built servers — source
-control, artifact repository, directory services, CI/CD, and monitoring — all
+control, artifact repository, directory services, GitLab Runner for CI/CD, and monitoring — all
 as CentOS 7 instances within private VPC subnets.
 
 The system used salt-cloud's provider/profile/map model: a provider block

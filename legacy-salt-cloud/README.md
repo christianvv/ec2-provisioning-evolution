@@ -156,8 +156,9 @@ Each key is a profile name; each value is a list of minion IDs (which become
 both the EC2 instance Name tag and the Salt minion ID).
 
 The DevOps tooling environment consisted of a small set of purpose-built servers:
-source control, artifact repository, directory services, CI/CD automation,
-monitoring, and Salt infrastructure.
+source control (GitLab CE), artifact repository, directory services, a dedicated
+GitLab Runner host executing CI/CD jobs via the Docker executor, monitoring, and
+Salt infrastructure.
 
 ### `bootstrap-scripts/bootstrap-minion.sh`
 
