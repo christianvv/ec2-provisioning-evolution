@@ -5,6 +5,7 @@
 ![AWS](https://img.shields.io/badge/AWS-FF9900?style=flat&logo=amazonaws&logoColor=white)
 ![License: MIT](https://img.shields.io/badge/License-MIT-green?style=flat)
 ![Tested with LocalStack](https://img.shields.io/badge/Tested_with-LocalStack-teal?style=flat)
+![CI](https://github.com/christianvv/ec2-provisioning-evolution/actions/workflows/terraform.yml/badge.svg)
 
 A portfolio repository documenting the evolution of AWS EC2 instance provisioning
 across two distinct eras of infrastructure tooling — from SaltStack's salt-cloud
@@ -132,6 +133,10 @@ are included. Files containing environment-specific values — `terraform.tfvars
 `backend_local.hcl`, `provider_override.tf` — are gitignored and are not committed.
 Local testing uses LocalStack; no real AWS infrastructure was harmed in the making of
 this repository.
+
+CI covers `modern-terraform/` only — `legacy-salt-cloud/` is excluded because its
+Jinja-templated configs require a live Salt master to validate meaningfully, for the
+same reasons documented in the companion `platform-config-evolution` repository.
 
 ---
 

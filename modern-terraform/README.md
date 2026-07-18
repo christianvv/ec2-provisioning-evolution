@@ -153,6 +153,29 @@ terraform apply
 
 ---
 
+## Continuous integration
+
+A GitHub Actions workflow (`.github/workflows/terraform.yml`) runs automatically on
+every push and pull request to `main`. It runs two jobs in sequence:
+
+**`fmt-and-validate`** — runs without any cloud connectivity. Checks all committed
+`.tf` files under `modern-terraform/` with `terraform fmt -check -recursive`, then
+runs `terraform init -backend=false` and `terraform validate` on both the bootstrap
+config and the root config. Backend initialization is skipped (`-backend=false`);
+validate checks syntax and internal schema consistency only.
+
+**`localstack-plan-apply`** (runs only after `fmt-and-validate` passes) — spins up a
+LocalStack service container, then exercises the same bootstrap → backend → apply
+lifecycle documented in the manual testing section above, fully automated:
+dynamically generates the gitignored `provider_override.tf` files and `backend_local.hcl`,
+bootstraps the S3 state bucket, initializes the root config against it, runs `plan`,
+`apply`, `state list` to confirm all resources were created, then `destroy` in reverse
+order. Both destroy steps run unconditionally (`if: always()`) to demonstrate a clean
+complete lifecycle even on earlier failure. LocalStack itself is ephemeral per CI run
+and does not persist between jobs.
+
+---
+
 ## Real AWS deployment
 
 This configuration is designed for real AWS deployment. For a live deployment:
