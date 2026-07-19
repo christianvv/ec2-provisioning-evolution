@@ -17,6 +17,12 @@ provider "aws" {
 resource "aws_s3_bucket" "tf_state_bucket" {
   bucket = "epe-mt-terraform-state-01"
 
+  # Enables terraform destroy to fully remove the bucket even with versioning
+  # enabled and prior object versions present - needed for CI's repeatable
+  # apply/destroy cycle. A real production state bucket would typically
+  # leave this false to prevent accidental loss of state history.
+  force_destroy = true
+
   tags = {
     Name    = "Terraform State Bucket"
     Purpose = "ec2-provisioning-evolution remote state"
